@@ -46,6 +46,8 @@ if ! ssh-add -l >/dev/null 2>&1; then
         # skip public keys and non-files
         [[ -f "$key" && "$key" != *.pub ]] || continue
         ssh-add "$key" >/dev/null 2>&1 || true
+
+        echo "ssh key ($key) added to ssh-agent"
     done
 fi
 
