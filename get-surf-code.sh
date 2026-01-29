@@ -44,6 +44,9 @@ for entry in "${REPOS[@]}"; do
 
     cd "$name" || continue
 
+    echo ">> Fetching all branches from origin"
+    git fetch origin
+
     if [ "$is_forked" = "true" ]; then
         echo ">> Adding upstream remote"
         git remote add upstream "$upstream_link"
