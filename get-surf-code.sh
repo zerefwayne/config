@@ -28,6 +28,15 @@ cd "$CODE_DIR" || exit 1
 for entry in "${REPOS[@]}"; do
     IFS=',' read -r name repo_link is_forked upstream_link <<< "$entry"
 
+    if [ -d "$CODE_DIR/$name" ]; then
+        echo
+        echo "========================================"
+        echo "Repository : $name"
+        echo ">> Skipping $name (already exists)"
+        echo "========================================"
+        continue
+    fi
+
     echo
     echo "========================================"
     echo "Repository : $name"
