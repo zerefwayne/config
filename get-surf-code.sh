@@ -15,6 +15,7 @@ REPOS=(
   "compatibility-layer,git@github.com:zerefwayne/compatibility-layer.git,true,git@github.com:EESSI/compatibility-layer.git"
   "filesystem-layer,git@github.com:zerefwayne/filesystem-layer.git,true,git@github.com:EESSI/filesystem-layer.git"
   "amd-amdsmi,git@github.com:ROCm/amdsmi.git,false,"
+  "amd-therock,git@github.com:ROCm/TheRock.git,false,"
   "thyre-easybuild-custom,git@github.com:Thyre/easybuild-custom.git,false,"
 )
 
