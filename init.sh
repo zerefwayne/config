@@ -1,13 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 # -------- Copy bashrc to home folder --------
 
-cp -f config/.bashrc ./.bashrc
-source ~/.bashrc
+cp -f config/.bashrc "$HOME/.bashrc"
+source "$HOME/.bashrc"
+
+# -------- Import GPG keys from ~/.gpg --------
+
+GPG_SRC="$HOME/.gpg"
+GPG_DST="$HOME/.gnupg"
+
+if [[ -d "$GPG_SRC" ]]; then
+    mkdir -p "$GPG_DST"
+    chmod 700 "$GPG_DST"
+
+    for key in "$GPG_SRC"/*; do
+        [[ -f "$key" ]] || continue
+        gpg --batch --import "$key" >/dev/null 2>&1 || true
+    done
+
+    # Fix permissions (GPG is strict)
+    chmod 700 "$GPG_DST"
+    find "$GPG_DST" -type f -exec chmod 600 {} \; || true
+fi
 
 # -------- Auto-configure Git to use GPG signing --------
 
-# Function to get the long GPG key ID from secret keys
 __git_gpg_key() {
-    # extract just the long key ID (not subkey, not fingerprint)
     gpg --list-secret-keys --keyid-format=long 2>/dev/null \
         | grep '^sec' \
         | head -n1 \
@@ -15,7 +35,6 @@ __git_gpg_key() {
         | cut -d'/' -f2
 }
 
-# Export the key and set Git config
 __configure_git_gpg() {
     local key
     key=$(__git_gpg_key)
@@ -25,29 +44,22 @@ __configure_git_gpg() {
         git config --global commit.gpgsign true
         git config --global gpg.program gpg
 
-        # Print status once
         echo "Git GPG signing enabled with key: $key"
     fi
 }
 
-# Run it once at shell startup
 __configure_git_gpg
 
 # -------- SSH agent init --------
 
-# Start ssh-agent if not already running for this user
 if ! pgrep -u "$USER" ssh-agent >/dev/null 2>&1; then
     eval "$(ssh-agent -s)" >/dev/null
 fi
 
-# Add SSH keys only if none are loaded
 if ! ssh-add -l >/dev/null 2>&1; then
     for key in "$HOME"/.ssh/id_*; do
-        # skip public keys and non-files
         [[ -f "$key" && "$key" != *.pub ]] || continue
         ssh-add "$key" >/dev/null 2>&1 || true
-
         echo "ssh key ($key) added to ssh-agent"
     done
 fi
-
