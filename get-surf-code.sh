@@ -17,6 +17,10 @@ REPOS=(
   "amd-amdsmi,git@github.com:ROCm/amdsmi.git,false,"
 )
 
+if [ ! -d "$CODE_DIR" ]; then
+    mkdir "$CODE_DIR"
+fi
+
 cd "$CODE_DIR" || exit 1
 
 # -------- Clone logic --------
