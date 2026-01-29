@@ -1,58 +1,66 @@
 #!/usr/bin/env bash
-set -euo pipefail
+
+# -------- Config --------
 
 CODE_DIR="$HOME/code"
 
+# Format:
+# name,repo_link,is_forked,upstream_link
 REPOS=(
-  "easyconfigs,git@github.com:zerefwayne/easybuild-easyconfigs.git,true,git@github.com:easybuilders/easybuild-easyconfigs.git"
-  "mytool,git@github.com:zerefwayne/mytool.git,false,"
+  "easybuild-easyblocks,git@github.com:zerefwayne/easybuild-easyblocks.git,true,git@github.com:easybuilders/easybuild-easyblocks.git"
+  "easybuild-easyconfigs,git@github.com:zerefwayne/easybuild-easyconfigs.git,true,git@github.com:easybuilders/easybuild-easyconfigs.git"
+  "easybuild-framework,git@github.com:zerefwayne/easybuild-framework.git,true,git@github.com:easybuilders/easybuild-framework.git"
+  "software-layer,git@github.com:zerefwayne/software-layer.git,true,git@github.com:EESSI/software-layer.git"
+  "software-layer-scripts,git@github.com:zerefwayne/software-layer-scripts.git,true,git@github.com:EESSI/software-layer-scripts.git"
+  "compatibility-layer,git@github.com:zerefwayne/compatibility-layer.git,true,git@github.com:EESSI/compatibility-layer.git"
+  "filesystem-layer,git@github.com:zerefwayne/filesystem-layer.git,true,git@github.com:EESSI/filesystem-layer.git"
 )
 
-TOTAL_REPOS="${#REPOS[@]}"
-COUNT=0
+# -------- Setup --------
 
-clear
-echo ">> Deleting existing $CODE_DIR"
+echo ">> Recreating $CODE_DIR"
 rm -rf "$CODE_DIR"
-echo ">> Creating new $CODE_DIR"
 mkdir -p "$CODE_DIR"
-cd "$CODE_DIR"
+cd "$CODE_DIR" || exit 1
+
+# -------- Clone logic --------
 
 for entry in "${REPOS[@]}"; do
-    ((COUNT++))
     IFS=',' read -r name repo_link is_forked upstream_link <<< "$entry"
 
-    clear
+    echo
     echo "========================================"
-    echo "Repository : $name ($COUNT/$TOTAL_REPOS)"
+    echo "Repository : $name"
     echo "Origin     : $repo_link"
     echo "Forked     : $is_forked"
-    [[ "$is_forked" == "true" ]] && echo "Upstream   : $upstream_link"
+    [ "$is_forked" = "true" ] && echo "Upstream   : $upstream_link"
     echo "========================================"
 
     echo ">> Cloning $name"
-    git clone "$repo_link" "$name" > /dev/null
+    git clone "$repo_link" "$name" || {
+        echo "!! Failed to clone $name"
+        continue
+    }
 
-    cd "$name"
+    cd "$name" || continue
 
-    if [[ "$is_forked" == "true" ]]; then
+    if [ "$is_forked" = "true" ]; then
         echo ">> Adding upstream remote"
-        git remote add upstream "$upstream_link" > /dev/null
+        git remote add upstream "$upstream_link"
 
-        current_branch="$(git symbolic-ref --short HEAD)"
+        current_branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
 
-        echo ">> Fetching upstream"
-        git fetch upstream > /dev/null
+        if [ -n "$current_branch" ]; then
+            echo ">> Fetching upstream"
+            git fetch upstream
 
-        echo ">> Setting branch '$current_branch' to track upstream/$current_branch"
-        git branch --set-upstream-to="upstream/$current_branch" "$current_branch" > /dev/null
+            echo ">> Setting branch '$current_branch' to track upstream/$current_branch"
+            git branch --set-upstream-to="upstream/$current_branch" "$current_branch"
+        fi
     fi
 
     cd ..
-
-    echo ">> Finished $name ($COUNT/$TOTAL_REPOS)"
-    sleep 1
 done
 
-clear
-echo ">> All repositories cloned into $CODE_DIR ($TOTAL_REPOS total)"
+echo
+echo ">> Done. Repositories cloned into $CODE_DIR"
