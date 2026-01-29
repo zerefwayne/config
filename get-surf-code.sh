@@ -14,13 +14,9 @@ REPOS=(
   "software-layer-scripts,git@github.com:zerefwayne/software-layer-scripts.git,true,git@github.com:EESSI/software-layer-scripts.git"
   "compatibility-layer,git@github.com:zerefwayne/compatibility-layer.git,true,git@github.com:EESSI/compatibility-layer.git"
   "filesystem-layer,git@github.com:zerefwayne/filesystem-layer.git,true,git@github.com:EESSI/filesystem-layer.git"
+  "amd-amdsmi,git@github.com:ROCm/amdsmi.git,false,"
 )
 
-# -------- Setup --------
-
-echo ">> Recreating $CODE_DIR"
-rm -rf "$CODE_DIR"
-mkdir -p "$CODE_DIR"
 cd "$CODE_DIR" || exit 1
 
 # -------- Clone logic --------
