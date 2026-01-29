@@ -32,3 +32,21 @@ __configure_git_gpg() {
 
 # Run it once at shell startup
 __configure_git_gpg
+
+# -------- SSH agent auto-start & key add --------
+
+# Only do this in interactive shells
+[[ -z "$PS1" ]] && return
+
+# Start ssh-agent if not running
+if ! pgrep -u "$USER" ssh-agent >/dev/null 2>&1; then
+    eval "$(ssh-agent -s)" >/dev/null
+fi
+
+# Add default SSH keys if none are loaded
+if ! ssh-add -l >/dev/null 2>&1; then
+    for key in ~/.ssh/id_*; do
+        [[ -f "$key" && "$key" != *.pub ]] && ssh-add "$key" >/dev/null 2>&1
+        echo "SSH key: $key added to ssh-agent"
+    done
+fi
