@@ -48,7 +48,7 @@ for entry in "${REPOS[@]}"; do
     echo "========================================"
 
     echo ">> Cloning $name"
-    git clone "$repo_link" "$name" || {
+    git clone --recurse-submodules "$repo_link" "$name" || {
         echo "!! Failed to clone $name"
         continue
     }
