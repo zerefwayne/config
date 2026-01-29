@@ -3,7 +3,7 @@ set -euo pipefail
 
 # -------- Copy bashrc to home folder --------
 
-cp -f config/.bashrc "$HOME/.bashrc"
+cp -f "$HOME/config/.bashrc" "$HOME/.bashrc"
 source "$HOME/.bashrc"
 
 # -------- Import GPG keys from ~/.gpg --------
@@ -57,7 +57,7 @@ if ! pgrep -u "$USER" ssh-agent >/dev/null 2>&1; then
 fi
 
 if ! ssh-add -l >/dev/null 2>&1; then
-    for key in "$HOME"/.ssh/id_*; do
+    for key in "$HOME/.ssh"/id_*; do
         [[ -f "$key" && "$key" != *.pub ]] || continue
         ssh-add "$key" >/dev/null 2>&1 || true
         echo "ssh key ($key) added to ssh-agent"
