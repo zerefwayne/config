@@ -5,6 +5,7 @@ CODE_DIR="$HOME/code"
 
 REPOS=(
   "easyconfigs,git@github.com:zerefwayne/easybuild-easyconfigs.git,true,git@github.com:easybuilders/easybuild-easyconfigs.git"
+  "mytool,git@github.com:zerefwayne/mytool.git,false,"
 )
 
 TOTAL_REPOS="${#REPOS[@]}"
@@ -30,21 +31,21 @@ for entry in "${REPOS[@]}"; do
     echo "========================================"
 
     echo ">> Cloning $name"
-    git clone "$repo_link" "$name"
+    git clone "$repo_link" "$name" > /dev/null
 
     cd "$name"
 
     if [[ "$is_forked" == "true" ]]; then
         echo ">> Adding upstream remote"
-        git remote add upstream "$upstream_link"
+        git remote add upstream "$upstream_link" > /dev/null
 
         current_branch="$(git symbolic-ref --short HEAD)"
 
         echo ">> Fetching upstream"
-        git fetch upstream
+        git fetch upstream > /dev/null
 
         echo ">> Setting branch '$current_branch' to track upstream/$current_branch"
-        git branch --set-upstream-to="upstream/$current_branch" "$current_branch"
+        git branch --set-upstream-to="upstream/$current_branch" "$current_branch" > /dev/null
     fi
 
     cd ..
