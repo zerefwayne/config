@@ -79,7 +79,7 @@ alias allocamd='salloc -w j14n2 --gres=gpu:mi210:1 -c 72 -t 04:00:00'
 alias getnodes='sinfo -N -o "%N %G %t"'
 
 alias liza='ssh aayushj@liza.surf.nl'
-alias snellius='ssh snellius@liza.surf.nl'
+alias snellius='ssh aayushj@int5-pub.snellius.surf.nl'
 alias src='ssh ajoglekar@145.38.186.81'
 
 alias get-surf-code='cd ~/config && git pull --rebase && bash get-surf-code.sh'
