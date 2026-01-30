@@ -1,6 +1,3 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
 # -------- Copy bashrc to home folder --------
 
 cp -f "$HOME/config/.bashrc" "$HOME/.bashrc"
@@ -43,6 +40,8 @@ __configure_git_gpg() {
         git config --global user.signingkey "$key"
         git config --global commit.gpgsign true
         git config --global gpg.program gpg
+        git config --global user.name "Aayush Joglekar"
+        git config --global user.email "aayushjog@gmail.com"
 
         echo "Git GPG signing enabled with key: $key"
     fi
