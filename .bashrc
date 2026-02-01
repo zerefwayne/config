@@ -1,5 +1,7 @@
 # .bashrc
 
+echo "Hello!"
+
 alias ls='ls --color=auto'
 alias update_config='cd ~/config; git pull --rebase; source init.sh'
 
