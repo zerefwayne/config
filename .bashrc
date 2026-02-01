@@ -1,6 +1,9 @@
 # .bashrc
 
 alias ls='ls --color=auto'
+alias update_config='cd ~/config; git pull --rebase; source init.sh'
+
+export GPG_TTY=$(tty)
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
