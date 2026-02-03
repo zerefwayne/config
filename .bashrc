@@ -80,7 +80,7 @@ export GPG_TTY=$(tty)
 alias getgpu="salloc -p gpu_a100 -n 1 -c 16 -t 4:00:00 --gpus-per-node=1"
 alias loadeessi="source /cvmfs/software.eessi.io/versions/2023.06/init/bash"
 alias letsgo='tmux attach -t work'
-alias allocamd='salloc -w j14n2 --gres=gpu:mi210:1 -c 72 -t 04:00:00'
+alias allocamd='salloc -w j14n2 --mem=128G --gres=gpu:mi210:1 -c 72 -t 04:00:00'
 alias getnodes='sinfo -N -o "%N %G %t"'
 
 alias liza='ssh aayushj@liza.surf.nl'
